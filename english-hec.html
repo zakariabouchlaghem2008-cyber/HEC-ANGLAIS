@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English for HEC Liège 🇬🇧</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { -webkit-font-smoothing: antialiased; background: #fdfaf6; }
+    ::-webkit-scrollbar { width: 6px; } 
+    ::-webkit-scrollbar-track { background: #f5f0eb; }
+    ::-webkit-scrollbar-thumb { background: #d6cfc8; border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const phases = [
+  { id: 1, name: "Phase 1", subtitle: "Fondations rapides", days: [1,10] },
+  { id: 2, name: "Phase 2", subtitle: "Construction", days: [11,24] },
+  { id: 3, name: "Phase 3", subtitle: "Académique & Business", days: [25,35] },
+  { id: 4, name: "Phase 4", subtitle: "Simulation universitaire", days: [36,42] },
+];
+
+const program = [
+  // ── PHASE 1 : Fondations rapides (Days 1–10) ──────────────────────────────
+  {
+    day: 1, phase: 1,
+    objective: "Réactiver les bases : prononciation + verbe TO BE + présentation personnelle",
+    vocab: ["student","university","degree","study","lecture","campus","semester","tuition","enroll","major","schedule","assignment","grade","course","professor"],
+    vocabNote: "15 mots essentiels du monde universitaire",
+    comprehension: { type:"Lecture", task:"Lis cette intro universitaire fictive (3 min) : « My name is Alex. I am a first-year student at HEC Liège. I study Business Engineering. My schedule is intense — I have lectures every day and assignments every week. My major is management. » → Identifie les 6 mots de vocab ci-dessus qui y apparaissent.", time:"10 min" },
+    active: { type:"Speaking", task:"Enregistre-toi (ou lis à voix haute) pendant 2 min : présente-toi en anglais — ton prénom, ton objectif, pourquoi tu vas à HEC Liège, une chose que tu aimes. Pas de perfection requise.", time:"10 min" },
+    revision: { task:"Écris les 15 mots de vocab dans un carnet/Anki avec leur traduction. Relis-les 2×.", time:"5 min" },
+    grammar: { focus:"Verbe TO BE (am/is/are) + pronoms sujets", example:"I am a student. She is my professor. We are enrolled.", time:"10 min" },
+    listening: { task:"YouTube : cherche 'BBC Learning English – What is a university?' (2–3 min). Écoute 2× et note 5 mots que tu reconnais.", time:"15 min" },
+    tips:"Ne vise pas la perfection — l'activation compte plus que la correction aujourd'hui.",
+  },
+  {
+    day: 2, phase: 1,
+    objective: "Présent simple (habitudes/faits) + vocabulaire économie de base",
+    vocab: ["economy","market","supply","demand","price","consumer","producer","income","profit","loss","tax","inflation","growth","trade","currency"],
+    vocabNote: "15 mots fondamentaux d'économie",
+    comprehension: { type:"Lecture", task:"Lis ce micro-texte (4 min) : « The economy of Belgium is a mixed market economy. Consumers and producers interact through markets. When supply increases and demand stays the same, prices usually fall. Inflation reduces purchasing power. Taxes fund public services. » → Réponds : Qu'est-ce qui fait baisser les prix ? Quel est l'effet de l'inflation ?", time:"12 min" },
+    active: { type:"Écriture", task:"Écris 5 phrases vraies au présent simple sur l'économie que tu connais. Ex: 'Inflation rises when demand is too high.' Utilise au moins 8 mots du vocab.", time:"12 min" },
+    revision: { task:"Rappel Day 1 : sans regarder, liste 10 mots university vocabulary de mémoire.", time:"5 min" },
+    grammar: { focus:"Présent simple : structure S + V(+s) + complément. Négation : don't/doesn't.", example:"The market grows. Taxes don't increase every year.", time:"10 min" },
+    listening: { task:"Podcast : 'BBC Global News – Economics in 60 seconds' ou toute intro éco en anglais. Note 3 chiffres ou faits entendus.", time:"11 min" },
+    tips:"Spaced repetition : ajoute aujourd'hui tous les mots à Anki ou un carnet dédié.",
+  },
+  {
+    day: 3, phase: 1,
+    objective: "Présent continu + vocabulaire management & organisation",
+    vocab: ["manager","team","project","deadline","objective","strategy","meeting","stakeholder","budget","resource","planning","leadership","decision","efficiency","performance"],
+    vocabNote: "15 mots clés du management",
+    comprehension: { type:"Lecture", task:"Lis : « The team is currently working on a new strategy. The manager is setting the objectives and allocating resources. We are planning a budget for Q3. The deadline is approaching fast, so efficiency is key. » → Quelles 3 actions sont en cours ? Quel est l'enjeu principal ?", time:"10 min" },
+    active: { type:"Speaking", task:"Décris à voix haute (2 min) une journée fictive de manager : 'At 9am, the manager is leading a meeting. The team is discussing…' Utilise le présent continu.", time:"10 min" },
+    revision: { task:"Rappel Day 2 : écris 5 mots d'économie et leur définition en anglais en 1 phrase.", time:"8 min" },
+    grammar: { focus:"Présent continu : S + am/is/are + V-ing. Différence avec présent simple.", example:"I study (habitude) vs I am studying (maintenant).", time:"10 min" },
+    listening: { task:"TED-Ed ou YouTube : 'What is management?' ou 'Management styles explained'. Écoute 3–4 min. Note 5 idées clés.", time:"12 min" },
+    tips:"Commence à penser en anglais 5 min par jour — en marchant, en mangeant.",
+  },
+  {
+    day: 4, phase: 1,
+    objective: "Passé simple + vocabulaire histoire économique",
+    vocab: ["crisis","recession","boom","recovery","collapse","policy","regulation","investment","capital","export","import","debt","deficit","surplus","interest rate"],
+    vocabNote: "15 mots macro-économiques",
+    comprehension: { type:"Lecture", task:"Lis : « In 2008, a major financial crisis hit the global economy. Banks collapsed, and unemployment rose sharply. Governments introduced new policies and regulations to stabilize markets. The recovery was slow but real GDP growth resumed by 2010. » → 3 questions : Quand ? Qui a souffert ? Quelle solution ?", time:"12 min" },
+    active: { type:"Écriture", task:"Écris un paragraphe de 60–80 mots sur une crise économique que tu connais (COVID, 2008…) au passé simple. Utilise 8 mots du vocab.", time:"15 min" },
+    revision: { task:"Rappel Days 1–3 : liste 5 mots de chaque thème (université, économie, management) sans aide.", time:"8 min" },
+    grammar: { focus:"Passé simple régulier (-ed) et irréguliers clés : went, had, was/were, rose, fell, grew.", example:"The economy collapsed. Interest rates rose sharply.", time:"10 min" },
+    listening: { task:"Cherche 'Crash Course Economics – Financial Crisis' (5 min env.). Note 3 causes de la crise.", time:"5 min" },
+    tips:"Les irréguliers : apprends-en 5 par jour cette semaine.",
+  },
+  {
+    day: 5, phase: 1,
+    objective: "Futur (will / going to) + vocabulaire business plan",
+    vocab: ["forecast","target","revenue","sales","profit margin","market share","competitor","launch","growth rate","objective","milestone","feasibility","venture","startup","scaling"],
+    vocabNote: "15 mots d'entrepreneuriat & business plan",
+    comprehension: { type:"Lecture", task:"Lis : « Our startup will launch in Q2. We are going to target the Belgian market first. Revenue forecasts show 20% growth in year one. Our main competitor has a 35% market share. We will focus on scaling after reaching our first milestone. » → Identifie : cible, prévision de croissance, plan d'expansion.", time:"10 min" },
+    active: { type:"Écriture", task:"Écris un mini business plan fictif (70–90 mots) pour un produit ou service inventé. Utilise will et going to, + 8 mots du vocab.", time:"15 min" },
+    revision: { task:"Révision spaced : reprends Day 2 vocab (économie). Dis chaque mot à voix haute + exemple.", time:"8 min" },
+    grammar: { focus:"Will (décision spontanée, prédiction) vs Going to (plan établi). Futur avec présent continu.", example:"I will call you. We are going to launch next month.", time:"12 min" },
+    listening: { task:"YouTube : 'How to write a business plan – explained simply' (3–4 min). Note structure entendue.", time:"5 min" },
+    tips:"JOUR 5 : tu as maintenant un socle de 75 mots thématiques. C'est déjà énorme.",
+  },
+  {
+    day: 6, phase: 1,
+    objective: "Révision intégrée Phase 1A + consolidation vocabulaire (Days 1–5)",
+    vocab: [],
+    vocabNote: "Pas de nouveaux mots aujourd'hui — consolidation uniquement",
+    comprehension: { type:"Lecture", task:"Lis ce texte mixte (5 min) : « HEC Liège is one of Belgium's top business schools. Students study economics, management, and finance. In 2020, the university launched a new program targeting students interested in scaling startups. The curriculum includes courses on market analysis, budgeting, and leadership. » → Résume en 3 phrases en anglais.", time:"12 min" },
+    active: { type:"Speaking + Écriture", task:"Partie 1 (5 min) : présente à voix haute le texte ci-dessus comme si tu l'expliquais à quelqu'un. Partie 2 (8 min) : écris 5 phrases complexes qui combinent passé + futur. Ex: 'The economy collapsed in 2008, but analysts predict it will grow again.'", time:"13 min" },
+    revision: { task:"Test flash : 30 mots des Days 1–5 — tu as 2 min pour écrire leur traduction. Vérifie ensuite.", time:"10 min" },
+    grammar: { focus:"Révision : TO BE / Présent simple / Présent continu / Passé simple / Futur. Fais 10 phrases variées qui utilisent chaque temps au moins une fois.", example:"Markets grow (PS). Prices are rising (PC). Rates fell in 2020 (Passé). We will recover (Futur).", time:"15 min" },
+    listening: { task:"Réécoute un audio des jours précédents. Cette fois, essaie de noter une phrase complète mot à mot (dictée).", time:"10 min" },
+    tips:"Les jours de révision sont aussi importants que les jours d'apprentissage. Ne les saute pas.",
+  },
+  {
+    day: 7, phase: 1,
+    objective: "Connecteurs logiques + structure de paragraphe académique",
+    vocab: ["however","therefore","furthermore","in addition","consequently","although","despite","whereas","on the other hand","as a result","for instance","in contrast","to conclude","firstly","finally"],
+    vocabNote: "15 connecteurs logiques académiques — indispensables à HEC",
+    comprehension: { type:"Lecture", task:"Lis ce paragraphe académique (5 min) : « The Belgian economy is largely service-based. However, manufacturing still plays a key role. Furthermore, Belgium's open economy means it is highly dependent on trade. As a result, external shocks — such as the 2008 crisis — have significant consequences. Despite this vulnerability, Belgium has maintained a relatively stable growth rate. » → Identifie tous les connecteurs et leur rôle (opposition, ajout, cause, conséquence).", time:"12 min" },
+    active: { type:"Écriture", task:"Écris un paragraphe de 80–100 mots sur un sujet économique de ton choix. Utilise au moins 6 connecteurs de la liste.", time:"18 min" },
+    revision: { task:"Rappel Day 4 et Day 5 : 5 mots chacun, sans aide. Écris une phrase avec chaque.", time:"8 min" },
+    grammar: { focus:"Structure d'un paragraphe académique : Topic sentence → développement → exemple → conclusion partielle.", example:"'The economy is growing.' → développement → 'For instance…' → 'Therefore, we can conclude…'", time:"12 min" },
+    listening: { task:"Cherche 'Academic English – paragraph structure' (YouTube, British Council…). Note la structure proposée.", time:"10 min" },
+    tips:"Ces connecteurs vont transformer tes écrits de 'basique' à 'académique'. Mémorise-les.",
+  },
+  {
+    day: 8, phase: 1,
+    objective: "Compréhension orale renforcée + vocabulaire finance de base",
+    vocab: ["asset","liability","equity","cash flow","balance sheet","income statement","dividend","shareholder","bond","stock","portfolio","risk","return","interest","audit"],
+    vocabNote: "15 mots de finance fondamentale",
+    comprehension: { type:"Audio", task:"YouTube : cherche 'What is a balance sheet? – explained' (Investopedia, Khan Academy ou similaire, 4–5 min). Écoute 2×. Première écoute : compréhension globale. Deuxième écoute : note assets / liabilities / equity et leur rôle.", time:"15 min" },
+    active: { type:"Écriture", task:"Explique en 60–70 mots (en anglais) la différence entre asset et liability, et entre stock et bond. Utilise au moins 5 mots du vocab.", time:"15 min" },
+    revision: { task:"Rappel Day 7 : liste les 15 connecteurs de mémoire. Identifie ceux que tu ne connais pas encore bien.", time:"7 min" },
+    grammar: { focus:"Comparatifs et superlatifs : more/less + adj, -er/-est, as…as. Clé pour analyser des données financières.", example:"Bonds are safer than stocks. Equity is the most important indicator.", time:"10 min" },
+    listening: { task:"Même vidéo qu'aujourd'hui mais vitesse ×1.25 si possible. Combien de mots du vocab tu reconnais ?", time:"3 min" },
+    tips:"La finance en anglais = langue internationale des affaires à HEC. Commence tôt.",
+  },
+  {
+    day: 9, phase: 1,
+    objective: "Questions académiques + email professionnel formel",
+    vocab: ["inquiry","request","regarding","attached","kindly","sincerely","yours faithfully","further information","available","schedule","appointment","confirm","deadline","enclosed","recipient"],
+    vocabNote: "15 mots d'anglais formel/email professionnel",
+    comprehension: { type:"Lecture", task:"Lis cet email étudiant → professeur (4 min) : « Dear Professor Smith, I am writing to inquire about the assignment deadline for the Business Economics module. I would kindly request a brief appointment to discuss my progress. I have attached my draft for your review. Please confirm a time that suits your schedule. Yours sincerely, Alex Martin. » → Identifie : objet, demande, pièce jointe, formule de politesse.", time:"10 min" },
+    active: { type:"Écriture", task:"Écris un email formel (80–100 mots) à ton futur professeur à HEC Liège. Tu demandes des informations sur les ressources du cours avant la rentrée. Utilise toutes les conventions formelles.", time:"20 min" },
+    revision: { task:"Rappel Days 1–8 : choisis 5 mots au hasard dans chaque phase et fais une phrase avec chacun.", time:"8 min" },
+    grammar: { focus:"Questions indirectes : 'Could you tell me when…' / 'I would like to know if…' Plus poli et académique.", example:"Could you please tell me what the deadline is? I would appreciate knowing if…", time:"12 min" },
+    listening: { task:"Cherche 'How to write a formal email in English' (YouTube, 3–4 min). Compare avec ton email.", time:"5 min" },
+    tips:"L'email formel sera utilisé chaque semaine à HEC. Cette compétence = immédiatement utile.",
+  },
+  {
+    day: 10, phase: 1,
+    objective: "BILAN PHASE 1 — Test complet + identification des lacunes",
+    vocab: [],
+    vocabNote: "Pas de nouveaux mots — évaluation et consolidation",
+    comprehension: { type:"Test Lecture", task:"Lis ce texte sans aide (6 min) : « Business engineering combines management science with economic theory. Students at HEC Liège are expected to analyze market trends, forecast revenues, and develop strategic plans. The curriculum emphasizes both quantitative skills — such as financial analysis — and soft skills, including leadership and communication. Furthermore, students must demonstrate the ability to write structured reports and present findings clearly. » → Sans regarder le texte : résume les attentes du programme en 4 points en anglais.", time:"15 min" },
+    active: { type:"Test Écriture", task:"Écris un paragraphe de 100 mots sur ce sujet : 'Why is studying business engineering useful in today's economy?' Utilise : connecteurs, vocabulaire des 10 derniers jours, au moins 3 temps différents.", time:"20 min" },
+    revision: { task:"Test flash total Phase 1 : 40 mots mélangés (flashcards ou liste). Note ton score. Objectif ≥ 30/40.", time:"10 min" },
+    grammar: { focus:"Auto-test : 10 phrases à corriger (temps, structure, connecteurs). Crée-les toi-même en essayant de te tromper volontairement, puis corrige.", example:"'The economy will collapsed in 2010' → 'The economy collapsed in 2010'", time:"10 min" },
+    listening: { task:"Écoute 4–5 min d'un podcast économique (BBC Business Daily, Planet Money…). Note : tu comprends combien de % globalement ?", time:"5 min" },
+    tips:"Si tu scores < 70%, repasse les jours les plus faibles avant de passer à Phase 2.",
+  },
+
+  // ── PHASE 2 : Construction (Days 11–24) ───────────────────────────────────
+  {
+    day: 11, phase: 2,
+    objective: "Lecture académique niveau B1 + vocabulaire microéconomie",
+    vocab: ["elasticity","substitution","utility","marginal cost","fixed cost","variable cost","monopoly","oligopoly","competition","equilibrium","surplus value","allocation","incentive","externality","subsidy"],
+    vocabNote: "15 mots de microéconomie — niveau cours HEC",
+    comprehension: { type:"Lecture académique", task:"Lis (6 min) : « In microeconomics, the concept of elasticity measures how sensitive demand is to price changes. A product with high elasticity sees demand drop sharply when prices rise — a common pattern in competitive markets. Conversely, goods with inelastic demand, like fuel, retain high consumption even with price increases. Government subsidies can correct for negative externalities by reducing marginal costs for producers. » → Identifie : définition de l'élasticité, exemple, rôle des subventions.", time:"15 min" },
+    active: { type:"Écriture", task:"Explique en 80 mots la différence entre marché concurrentiel et monopole. Utilise les connecteurs appris en Day 7.", time:"15 min" },
+    revision: { task:"Rappel Day 7 (connecteurs) + Day 4 (macro vocab). 5 + 5 mots à voix haute avec définition.", time:"8 min" },
+    grammar: { focus:"Voix passive : S + to be + V-pp. Très fréquente dans les textes académiques.", example:"Prices are determined by supply and demand. Subsidies are granted by the government.", time:"12 min" },
+    listening: { task:"Khan Academy (YouTube) : 'Elasticity of demand' ou équivalent (5 min). Note 3 formules ou exemples.", time:"10 min" },
+    tips:"Phase 2 monte en complexité. Lis les textes plus lentement — la compréhension prime sur la vitesse.",
+  },
+  {
+    day: 12, phase: 2,
+    objective: "Compréhension orale universitaire + vocabulaire macroéconomie avancé",
+    vocab: ["GDP","monetary policy","fiscal policy","central bank","unemployment rate","exchange rate","trade balance","aggregate demand","national debt","quantitative easing","austerity","benchmark","sovereign","yield","liquidity"],
+    vocabNote: "15 mots de macroéconomie avancée",
+    comprehension: { type:"Audio", task:"YouTube : 'How does fiscal policy work?' (Investopedia ou BBC, 4–5 min). 1ère écoute : idée générale. 2ème écoute : note les 4 outils de politique fiscale mentionnés. Vérifie si GDP, tax, spending apparaissent.", time:"15 min" },
+    active: { type:"Speaking", task:"Enregistre ou lis à voix haute (3 min) : explique ce qu'est le GDP et comment la politique monétaire peut influencer l'inflation. Utilise tes propres mots.", time:"12 min" },
+    revision: { task:"Rappel Day 11 (microéconomie). 8 mots à définir en anglais en 1 phrase. Sans aide.", time:"8 min" },
+    grammar: { focus:"Modaux académiques : can, could, may, might, should, must, ought to — nuances de certitude et recommandation.", example:"Inflation may rise. The government should reduce spending. Central banks must act quickly.", time:"10 min" },
+    listening: { task:"Même audio qu'aujourd'hui mais note une phrase complète mot par mot (micro-dictée).", time:"5 min" },
+    tips:"Les modaux sont omniprésents dans les analyses et rapports universitaires. Maîtrise-les.",
+  },
+  {
+    day: 13, phase: 2,
+    objective: "Rédaction structurée : l'argumentation académique",
+    vocab: ["argument","claim","evidence","counterargument","rebuttal","thesis","premise","conclusion","assumption","correlation","causation","data","empirical","hypothesis","framework"],
+    vocabNote: "15 mots du raisonnement académique",
+    comprehension: { type:"Lecture", task:"Lis (5 min) : « One common claim in economics is that free trade always benefits all parties. However, the empirical evidence suggests a more nuanced picture. While aggregate GDP may rise, income distribution effects can create losers within economies. The assumption that markets self-correct is contested by Keynesian frameworks. A strong argument must therefore include both data and counterarguments. » → Quelle est la thèse ? Quel est le contre-argument ? Quelle hypothèse est remise en question ?", time:"12 min" },
+    active: { type:"Écriture structurée", task:"Écris un mini-essai de 120 mots sur : 'Should governments intervene in free markets?' Structure : thesis + argument + evidence + counterargument + conclusion. Utilise 8 mots du vocab.", time:"22 min" },
+    revision: { task:"Rappel Days 7 + 11 + 12 : 5 connecteurs + 5 mots micro + 5 mots macro. Flash test.", time:"8 min" },
+    grammar: { focus:"Relatives clauses : who, which, that, where, whose. Pour complexifier les phrases académiques.", example:"The economist who proposed this theory won the Nobel Prize. The policy, which was introduced in 2008, reduced inflation.", time:"8 min" },
+    listening: { task:"TED-Ed : 'How to argue — Philosophical reasoning' (3–4 min). Note la structure d'argumentation utilisée.", time:"10 min" },
+    tips:"Le mini-essai est le format clé de HEC. Pratique-le tous les 3 jours à partir de maintenant.",
+  },
+  {
+    day: 14, phase: 2,
+    objective: "Vocabulaire ingénierie de gestion + lecture de graphiques/données",
+    vocab: ["data analysis","quantitative","qualitative","model","variable","indicator","benchmark","forecast","trend","regression","correlation","optimization","simulation","output","input"],
+    vocabNote: "15 mots d'ingénierie de gestion et d'analyse de données",
+    comprehension: { type:"Lecture + données", task:"Lis et analyse (6 min) : « The table shows GDP growth rates for Belgium: 2019: +1.8%, 2020: -5.7%, 2021: +6.2%, 2022: +3.1%, 2023: +1.4%. Using regression analysis, economists forecast a trend of moderate growth. The 2020 outlier correlates with the COVID-19 shock. Optimization models suggest fiscal stimulus was the key variable driving the 2021 recovery. » → Décris la tendance en 3 phrases. Quel événement explique le creux de 2020 ?", time:"15 min" },
+    active: { type:"Écriture", task:"Écris une courte analyse (90 mots) de ces données. Structure : observation générale → cause de l'anomalie → prévision. Utilise au moins 6 mots du vocab.", time:"18 min" },
+    revision: { task:"Rappel Day 13 (argumentation) : écris une phrase exemple avec : argument, evidence, hypothesis, counterargument.", time:"7 min" },
+    grammar: { focus:"Chiffres et données en anglais : virgule vs point, pourcentages, fractions, tendances (rose by 3%, fell to 2%, remained stable at…).", example:"GDP fell by 5.7% in 2020. It rose sharply to 6.2% the following year.", time:"10 min" },
+    listening: { task:"Cherche 'Reading graphs in English – academic vocabulary' (YouTube, 3 min). Note les verbes de tendance utilisés.", time:"5 min" },
+    tips:"Décrire des graphiques et des données = compétence quotidienne à HEC Liège.",
+  },
+  {
+    day: 15, phase: 2,
+    objective: "Révision intermédiaire Phase 2 + consolider la production écrite",
+    vocab: [],
+    vocabNote: "Révision et pratique de production — pas de nouveaux mots",
+    comprehension: { type:"Lecture", task:"Lis sans aide (6 min) : « Business engineering at HEC Liège integrates quantitative methods with strategic management. Students are required to analyze datasets, build financial models, and present their findings using empirical evidence. The curriculum assumes a B2-level command of English, as most academic resources are in English. Lectures, assignments, and case studies demand both reading comprehension and structured writing skills. » → Liste 5 compétences attendues mentionnées dans le texte.", time:"12 min" },
+    active: { type:"Écriture libre", task:"Écris 120–140 mots : 'What skills does a business engineer need in the 21st century?' Utilise les vocabulaires des Days 11–14 + connecteurs.", time:"22 min" },
+    revision: { task:"Test Phase 2A : 30 mots des Days 11–14. Score cible : ≥ 22/30.", time:"10 min" },
+    grammar: { focus:"Révision : voix passive + modaux + relatives. Réécris 5 phrases actives en passif, ajoute un modal à 3 phrases, et améliore 2 phrases avec une relative.", example:"Economists study markets → Markets are studied by economists.", time:"10 min" },
+    listening: { task:"BBC Business Daily (podcast, 5 min). Sujet au choix. Note : tu comprends quelles parties ? Lesquelles résistent ?", time:"6 min" },
+    tips:"Identifie tes 3 mots les plus flous et fais-les réviser en priorité demain.",
+  },
+  {
+    day: 16, phase: 2,
+    objective: "Vocabulaire RH & organisation + compréhension orale niveau B1+",
+    vocab: ["recruitment","workforce","retention","performance review","appraisal","hierarchy","delegation","motivation","incentive","compensation","productivity","burnout","diversity","inclusion","talent management"],
+    vocabNote: "15 mots RH et gestion des ressources humaines",
+    comprehension: { type:"Audio", task:"YouTube : 'Human Resource Management explained' (5 min). Note : 3 fonctions des RH / 2 défis mentionnés / le lien entre motivation et productivity.", time:"15 min" },
+    active: { type:"Speaking", task:"Décris à voix haute (3 min) : le processus de recrutement idéal dans une entreprise. Structure : 1) afficher le poste 2) sélectionner 3) entretien 4) intégration. Utilise le vocab du jour.", time:"12 min" },
+    revision: { task:"Rappel Day 12 (macro vocab) : 6 mots à définir en anglais en une phrase.", time:"8 min" },
+    grammar: { focus:"Conditionnel présent (hypothèse réelle) : If + présent simple, will + infinitif. Conditionnel passé (hypothèse irréelle) : If + passé simple, would + infinitif.", example:"If the company invests in training, productivity will increase. If we had hired better, we would have avoided burnout.", time:"10 min" },
+    listening: { task:"Même audio qu'aujourd'hui, × 1.25 de vitesse. Combien de mots du vocab tu reconnais à l'oral ?", time:"5 min" },
+    tips:"La gestion RH = thème central du bachelor. Retiens ces mots prioritairement.",
+  },
+  {
+    day: 17, phase: 2,
+    objective: "Lecture académique niveau B1+/B2 + analyse critique",
+    vocab: ["critique","evaluate","assess","strengths","weaknesses","limitations","implications","significant","relevant","robust","ambiguous","reliable","valid","perspective","methodology"],
+    vocabNote: "15 mots pour l'analyse critique académique",
+    comprehension: { type:"Lecture académique", task:"Lis (7 min) : « A recent study evaluated the relationship between CEO compensation and firm performance. The methodology used regression analysis on 500 European companies over 10 years. While results show a significant positive correlation, critics argue the relationship is ambiguous due to confounding variables. The study's limitations include its focus on large firms, which reduces its validity for SMEs. These findings have important implications for corporate governance policy. » → Identifie : méthode, résultat, limite, implication.", time:"15 min" },
+    active: { type:"Écriture critique", task:"Écris une critique de 100–120 mots d'une idée économique que tu connais (ex: 'L'austérité est toujours bénéfique'). Intègre : thèse + évaluation critique + limites + conclusion.", time:"20 min" },
+    revision: { task:"Rappel Day 16 (RH) + Day 13 (argumentation) : 5 + 5 mots flashtest.", time:"8 min" },
+    grammar: { focus:"Participes présents et passés pour enrichir les phrases. V-ing et V-pp en position de modificateur.", example:"Using regression analysis, the team found… / The results, confirmed by several studies, suggest…", time:"7 min" },
+    listening: { task:"TED Talk (simple, sous-titres anglais) : 'The puzzle of motivation – Dan Pink' (premiers 5 min). Note 3 idées clés.", time:"10 min" },
+    tips:"Activer les sous-titres en anglais uniquement — jamais en français.",
+  },
+  {
+    day: 18, phase: 2,
+    objective: "Marketing & stratégie + compréhension d'un business case",
+    vocab: ["branding","positioning","segmentation","target audience","value proposition","competitive advantage","differentiation","pricing strategy","distribution channel","market penetration","product lifecycle","promotion","customer retention","B2B","B2C"],
+    vocabNote: "15 mots clés du marketing stratégique",
+    comprehension: { type:"Business Case", task:"Lis ce mini-cas (7 min) : « Apple's competitive advantage lies in its strong branding and product differentiation. Its pricing strategy targets premium segments with high purchasing power. Through effective segmentation, Apple positions itself as a lifestyle brand rather than merely a tech company. Its B2C distribution channels include both direct retail and online sales. The result is exceptional customer retention and a dominant market position. » → Identifie : avantage compétitif, stratégie de prix, cible, canaux, résultat.", time:"15 min" },
+    active: { type:"Écriture case study", task:"Analyse en 100 mots le business model d'une marque que tu connais (Nike, Zara, Amazon…). Structure : segmentation → différenciation → stratégie → résultat.", time:"18 min" },
+    revision: { task:"Rappel Day 17 (analyse critique) : 6 mots à utiliser dans 3 phrases complexes.", time:"8 min" },
+    grammar: { focus:"Nominalisations : transformer les verbes/adjectifs en noms académiques. Rend le style plus formel.", example:"The company decided → The company's decision. They grew rapidly → rapid growth. It is significant → its significance.", time:"9 min" },
+    listening: { task:"Cherche 'Marketing strategy explained – HBR' ou 'Business case analysis' (YouTube, 4 min). Note le vocabulaire marketing utilisé.", time:"10 min" },
+    tips:"HEC Liège utilise des business cases réels en cours. Ce format = fondamental.",
+  },
+  {
+    day: 19, phase: 2,
+    objective: "Compréhension orale avancée + prise de notes universitaire",
+    vocab: ["outline","key point","summary","notation","shorthand","abbreviation","concept","definition","application","context","link","review","clarify","expand","illustrate"],
+    vocabNote: "15 mots liés à la prise de notes et aux cours universitaires",
+    comprehension: { type:"Audio — prise de notes", task:"YouTube : trouve une mini-conférence ou cours universitaire en anglais (économie ou management, 5–7 min). Écoute et prends des notes structurées : idée principale / points clés / exemples / conclusion. Pas mot à mot — résumé schématique.", time:"20 min" },
+    active: { type:"Écriture depuis notes", task:"À partir de tes notes, écris un résumé de 80–100 mots du cours écouté. Structure académique obligatoire.", time:"15 min" },
+    revision: { task:"Rappel Day 18 (marketing) : 7 mots à définir oralement en anglais.", time:"7 min" },
+    grammar: { focus:"Ellipse et réduction dans les notes : comment abréger sans perdre le sens. Pratique les symboles standards (→, ∴, ≈, ↑↓, =, ≠, cf.).", example:"GDP ↑ → inflation ↑ / Central bank → interest rates ↑ → spending ↓", time:"8 min" },
+    listening: { task:"Réécoute le même cours × 1.5 de vitesse. Note ce que tu comprends mieux ou moins bien.", time:"10 min" },
+    tips:"La prise de notes en anglais en temps réel = compétence de survie à l'université.",
+  },
+  {
+    day: 20, phase: 2,
+    objective: "Révision globale Phase 2 + production écrite autonome",
+    vocab: [],
+    vocabNote: "Consolidation — pas de nouveaux mots",
+    comprehension: { type:"Lecture longue", task:"Lis sans aide (8 min) : « The field of business engineering at HEC Liège encompasses quantitative analysis, strategic management, and human resource theory. Students are assessed through written reports, case study presentations, and examinations. A strong command of academic English is essential, as textbooks, journal articles, and lecture slides are predominantly in English. Critical evaluation of empirical evidence is a core skill, as is the ability to synthesize information from multiple sources and present a structured argument. » → Résume en 5 bullet points en anglais.", time:"15 min" },
+    active: { type:"Essai complet", task:"Écris un essai de 150 mots sur : 'What are the main challenges facing business engineers in a globalized economy?' Structure complète : intro (thèse) → 2 arguments avec exemples → conclusion.", time:"25 min" },
+    revision: { task:"Grand test Phase 2 : 50 mots mélangés des Days 11–19. Cible : ≥ 37/50.", time:"12 min" },
+    grammar: { focus:"Auto-correction : relis ton essai. Cherche 3 erreurs de grammaire à corriger. Utilises-tu des connecteurs, du passif, des modaux, des relatives ?", example:"Améliore : 'Companies need hire talent' → 'Companies need to hire talented employees.'", time:"8 min" },
+    listening: { task:"BBC Business Daily ou Planet Money (5 min). Tu comprends maintenant davantage qu'au Day 10 ?", time:"0 min" },
+    tips:"Jours 20 : tu es à mi-parcours. La progression doit être visible — si ce n'est pas le cas, identifie tes gaps.",
+  },
+  {
+    day: 21, phase: 2,
+    objective: "Anglais des chiffres et statistiques + présentation orale simple",
+    vocab: ["approximately","roughly","precisely","on average","in total","per capita","annually","quarterly","significantly","marginally","dramatically","steadily","sharply","moderately","consistently"],
+    vocabNote: "15 adverbes et expressions quantitatives académiques",
+    comprehension: { type:"Lecture", task:"Lis (5 min) : « Belgium's GDP per capita is approximately €42,000 annually. Unemployment fell sharply from 8.5% to 5.7% between 2015 and 2022. On average, wages grew by roughly 1.5% per year over the same period. Public debt rose moderately, reaching 105% of GDP. Inflation increased dramatically in 2022, peaking at 9.6% before declining steadily. » → Note les 6 adverbes de quantité utilisés et leur nuance.", time:"10 min" },
+    active: { type:"Speaking — présentation de données", task:"Présente ces statistiques à voix haute (3 min) comme si tu étais face à ton professeur à HEC. Commence par 'In this brief presentation, I will analyze Belgium's recent economic indicators…'", time:"15 min" },
+    revision: { task:"Rappel Days 14 + 19 : termes de données et prise de notes. 5 + 5 mots en phrases.", time:"8 min" },
+    grammar: { focus:"Adverbes de degré et de fréquence : position dans la phrase, accord avec verbes et adjectifs.", example:"Prices rose sharply. The market has consistently grown. Inflation was dramatically high.", time:"8 min" },
+    listening: { task:"Cherche 'Statistics in English – vocabulary for graphs and data' (YouTube, 3–4 min). Compare avec le vocab du jour.", time:"9 min" },
+    tips:"Présenter des chiffres en anglais correctement = très valorisé en cours à HEC.",
+  },
+  {
+    day: 22, phase: 2,
+    objective: "Comprehension texte juridique-économique + vocabulaire droit des affaires",
+    vocab: ["contract","liability","compliance","regulation","intellectual property","patent","trademark","breach","arbitration","governance","stakeholder","fiduciary","clause","enforcement","jurisdiction"],
+    vocabNote: "15 mots de droit des affaires",
+    comprehension: { type:"Lecture", task:"Lis (6 min) : « Corporate governance refers to the system by which companies are directed and controlled. Boards of directors have fiduciary duties to shareholders. Compliance with regulation is mandatory — breaches can result in fines or arbitration proceedings. Intellectual property rights, including patents and trademarks, are protected under both national and international jurisdiction. A well-drafted contract minimizes liability and ensures enforcement of obligations. » → Définis en tes mots : governance, compliance, fiduciary duty.", time:"15 min" },
+    active: { type:"Écriture", task:"Tu es consultant. Écris 90 mots de recommandations à une startup sur : comment protéger sa propriété intellectuelle et assurer sa compliance. Utilise 8 mots du vocab.", time:"18 min" },
+    revision: { task:"Rappel Day 16 (RH) + Day 21 (statistiques) : 5 + 5 mots flashtest oral.", time:"8 min" },
+    grammar: { focus:"Gérondifs vs infinitifs : règles d'usage (enjoy/avoid + V-ing / want/decide + to V). Communs dans les textes juridiques et managériaux.", example:"The company decided to comply. Management avoided breaching the contract.", time:"9 min" },
+    listening: { task:"Cherche 'Corporate governance explained' (YouTube, 4 min). Note 3 responsabilités du board of directors.", time:"10 min" },
+    tips:"Droit des affaires = module souvent enseigné en anglais à HEC. Cet investissement vocab paiera.",
+  },
+  {
+    day: 23, phase: 2,
+    objective: "Communication orale universitaire — débat et opinion",
+    vocab: ["in my view","I argue that","it could be argued","evidence suggests","I would contend","critics claim","supporters argue","research indicates","it is worth noting","to illustrate","to summarize","having considered","overall","broadly speaking","to what extent"],
+    vocabNote: "15 expressions d'opinion et de débat académique",
+    comprehension: { type:"Audio — débat", task:"YouTube : cherche un débat académique ou panel discussion en économie (Oxford Union ou équivalent, 5 min). Note : comment les participants introduisent-ils leur opinion ? Quelles expressions reviennent ?", time:"12 min" },
+    active: { type:"Speaking — débat solo", task:"Prends position sur : 'Should minimum wage be increased?' Enregistre 3–4 min : intro (ta position) → 2 arguments → contre-argument → conclusion. Utilise les 15 expressions du vocab.", time:"20 min" },
+    revision: { task:"Rappel Day 13 (argumentation) : relire ton mini-essai du Day 13 et améliore-le avec les expressions d'aujourd'hui.", time:"10 min" },
+    grammar: { focus:"Hedging language — langage prudent académique : seem, appear, tend to, suggest, indicate, may, might, arguably. Réduit les affirmations trop catégoriques.", example:"Corruption appears to hinder economic growth. Evidence suggests wages may rise.", time:"8 min" },
+    listening: { task:"Re-écoute les 2 premières minutes du débat × 1.25. Essaie de répéter les phrases entendues à voix haute (shadowing).", time:"10 min" },
+    tips:"Le shadowing = imiter exactement ce qu'on entend. Meilleure technique d'oral qui soit.",
+  },
+  {
+    day: 24, phase: 2,
+    objective: "BILAN PHASE 2 — Grand test + essai autonome",
+    vocab: [],
+    vocabNote: "Test final Phase 2 — pas de nouveau contenu",
+    comprehension: { type:"Test lecture", task:"Lis sans aide (8 min) : un article économique réel sur le site de la BCE, The Economist ou BBC Business. Note 5 mots inconnus, cherche leur définition, et résume l'article en 3 phrases.", time:"15 min" },
+    active: { type:"Essai timed — 20 min", task:"Sujet : 'Discuss the advantages and disadvantages of globalization for developing economies.' 150–180 mots. Chronomètre. Structure complète obligatoire : intro, 2 corps, conclusion.", time:"20 min" },
+    revision: { task:"Test flash Phase 2 complet : 60 mots des Days 11–23. Cible : ≥ 45/60.", time:"12 min" },
+    grammar: { focus:"Révision structures Phase 2 : passif, modaux, relatives, conditionnels, nominalisations, hedging. Réécris 5 phrases simples en phrases académiques sophistiquées.", example:"Prices go up → Prices have been observed to increase significantly / Inflation appears to rise.", time:"8 min" },
+    listening: { task:"BBC Business Daily complet (15–20 min podcast) — écoute en faisant autre chose, puis note 5 idées après.", time:"5 min" },
+    tips:"Phase 2 terminée. Tu dois maintenant écrire et comprendre de l'anglais académique de niveau B1+/B2. Phase 3 monte encore.",
+  },
+
+  // ── PHASE 3 : Académique & Business (Days 25–35) ──────────────────────────
+  {
+    day: 25, phase: 3,
+    objective: "Lecture universitaire B2 + vocabulaire comptabilité de gestion",
+    vocab: ["depreciation","amortization","accrual","provision","write-off","overhead","cost allocation","break-even","contribution margin","variance","standard cost","absorption costing","budget variance","EBITDA","working capital"],
+    vocabNote: "15 mots de comptabilité de gestion — niveau cours HEC",
+    comprehension: { type:"Lecture académique B2", task:"Lis (8 min) : « Management accounting differs from financial accounting in its primary audience: internal managers rather than external stakeholders. Key concepts include cost allocation — distributing overheads across products — and variance analysis, which compares standard costs with actual costs. EBITDA serves as a proxy for operating cash flow, while working capital management ensures liquidity. Break-even analysis determines the minimum sales volume required to cover both fixed and variable costs. » → Explique break-even et EBITDA en tes mots.", time:"15 min" },
+    active: { type:"Écriture technique", task:"Écris 100 mots expliquant à un ami la différence entre comptabilité financière et de gestion. Utilise 8 mots du vocab.", time:"18 min" },
+    revision: { task:"Rappel Day 8 (finance) + Day 14 (ingénierie de gestion) : 5 + 5 mots oraux.", time:"8 min" },
+    grammar: { focus:"Present perfect simple vs Present perfect continu. Important pour décrire des processus en cours et des résultats récents.", example:"The company has reduced costs (résultat). Managers have been analyzing data for months (processus en cours).", time:"9 min" },
+    listening: { task:"Cherche 'Management accounting explained' (YouTube, 4–5 min). Note 3 outils de comptabilité de gestion.", time:"10 min" },
+    tips:"Phase 3 = tu dois lire des textes universitaires sans dictionnaire. Entraîne toi à déduire du contexte.",
+  },
+  {
+    day: 26, phase: 3,
+    objective: "Stratégie d'entreprise — cas réel + vocabulaire stratégie avancée",
+    vocab: ["SWOT analysis","PESTEL","Porter's Five Forces","value chain","core competency","synergy","merger","acquisition","vertical integration","horizontal integration","diversification","divestiture","blue ocean","disruptive innovation","first-mover advantage"],
+    vocabNote: "15 mots de stratégie d'entreprise — frameworks académiques",
+    comprehension: { type:"Business case réel", task:"Lis (8 min) : « Amazon's acquisition of Whole Foods in 2017 represents a classic case of vertical integration. Amazon leveraged its core competency in logistics and data analytics to gain a first-mover advantage in premium grocery retail. Porter's Five Forces analysis reveals a highly competitive landscape with low switching costs. However, Amazon's scale created synergies that smaller competitors could not replicate, effectively shifting the competitive dynamic. » → Identifie le framework utilisé, la stratégie d'Amazon, et son avantage.", time:"15 min" },
+    active: { type:"Analyse SWOT", task:"Choisis une entreprise belge ou internationale. Écris une mini-analyse SWOT en anglais (4 × 3 points). 100 mots minimum.", time:"22 min" },
+    revision: { task:"Rappel Day 18 (marketing) + Day 22 (droit des affaires) : 5 + 5 mots flashtest.", time:"8 min" },
+    grammar: { focus:"Discours rapporté : he said that / she argued that / the report suggested that. Utile pour citer des sources académiques.", example:"Porter argued that competitive forces shape industry profitability. The study suggested that synergies were overestimated.", time:"10 min" },
+    listening: { task:"Cherche 'Porter's Five Forces explained' ou 'SWOT analysis real example' (YouTube, 5 min). Prends des notes.", time:"5 min" },
+    tips:"SWOT, PESTEL, Porter = frameworks récurrents à HEC. Sache les appliquer EN anglais.",
+  },
+  {
+    day: 27, phase: 3,
+    objective: "Compréhension orale B2 — conférence académique simulée",
+    vocab: ["keynote","findings","methodology","implication","recommendation","empirical","peer-reviewed","hypothesis","significance","dataset","variable","control group","sample size","validity","replication"],
+    vocabNote: "15 mots de recherche académique et conférence",
+    comprehension: { type:"Audio — conférence académique", task:"YouTube : cherche 'academic conference talk economics' ou une conférence TED/TEDx sur un sujet économique (8–10 min). Écoute avec notes : thèse / méthode / résultats / implications. Structure ta prise de notes.", time:"20 min" },
+    active: { type:"Résumé académique", task:"Depuis tes notes, écris un résumé structuré de 120 mots de la conférence. Utilise les mots du vocab + connecteurs académiques.", time:"18 min" },
+    revision: { task:"Rappel Day 17 (analyse critique) : relire ton écriture du Day 17 et identifie ce que tu améliorerais maintenant.", time:"7 min" },
+    grammar: { focus:"Discours académique indirect et citations : According to X… / As Smith (2019) argues… / The data indicate that… Fondamental pour les rapports à HEC.", example:"According to the IMF, global growth will slow in 2025. As the researcher argues, the sample size limits generalizability.", time:"10 min" },
+    listening: { task:"Réécoute les 3 premières minutes de la conférence × 1.5. Pratique le shadowing 1 min.", time:"5 min" },
+    tips:"Prendre des notes en anglais à la vitesse d'un conférencier = entraînement essentiel.",
+  },
+  {
+    day: 28, phase: 3,
+    objective: "Révision intermédiaire Phase 3 + écriture d'un rapport structuré",
+    vocab: [],
+    vocabNote: "Pas de nouveaux mots — production écrite avancée",
+    comprehension: { type:"Lecture rapport", task:"Lis ce début de rapport (7 min) : « Executive Summary: This report analyzes the impact of rising interest rates on SME financing in Belgium between 2022 and 2024. Using data from the National Bank of Belgium, we identify three key trends: a decline in new loan approvals, an increase in short-term borrowing, and growing reliance on equity financing. Our findings suggest that monetary policy tightening disproportionately affects smaller firms. Recommendations are provided in Section 4. » → Identifie structure : objet / données / résultats / recommandations.", time:"12 min" },
+    active: { type:"Rapport — premier draft", task:"Écris ton propre executive summary de 120 mots sur : 'The impact of inflation on Belgian consumer spending in 2022–2024.' Structure : objet → sources → résultats → recommandation.", time:"25 min" },
+    revision: { task:"Test flash : 40 mots des Days 25–27. Cible : ≥ 30/40.", time:"10 min" },
+    grammar: { focus:"Cohérence et cohésion textuelle : référents pronominaux, répétition lexicale contrôlée, transitions inter-paragraphes.", example:"Interest rates rose. This increase… / Inflation peaked in 2022; by contrast, 2023 saw a gradual decline.", time:"8 min" },
+    listening: { task:"BBC Business Daily sur l'inflation (cherche un épisode récent). Prends 5 min de notes structurées.", time:"5 min" },
+    tips:"L'executive summary = format clé des rapports à HEC. Pratique-le régulièrement.",
+  },
+  {
+    day: 29, phase: 3,
+    objective: "Présentation orale académique — structure et delivery",
+    vocab: ["slide","visual aid","transition","signposting","pace","clarity","emphasis","structure","introduction","body","conclusion","Q&A","engage","audience","confidence"],
+    vocabNote: "15 mots de présentation orale académique",
+    comprehension: { type:"Vidéo — présentation modèle", task:"YouTube : cherche 'How to give an academic presentation in English' ou un exemple de présentation étudiante en business (5–7 min). Note : comment il/elle structure la présentation ? Quelles phrases signpost utilise-t-il/elle ?", time:"12 min" },
+    active: { type:"Speaking — présentation minutée", task:"Prépare et enregistre une présentation orale de 3–4 min sur : 'The main causes of the 2008 financial crisis and its lessons for today.' Structure : intro (30s) → cause 1 → cause 2 → leçon → conclusion. Utilise les signposts vus.", time:"22 min" },
+    revision: { task:"Rappel Day 23 (débat) + Day 26 (stratégie) : 5 + 5 mots oraux.", time:"8 min" },
+    grammar: { focus:"Phrases de signposting : 'Moving on to…' / 'As I mentioned earlier…' / 'To summarize…' / 'My next point concerns…' Mémorise 10 expressions de transition orale.", example:"'First, I will discuss… Moving on, let us examine… To conclude, the evidence suggests…'", time:"8 min" },
+    listening: { task:"Réécoute ta propre présentation enregistrée. Note 2 choses à améliorer : fluidité et précision vocab.", time:"10 min" },
+    tips:"Écouter ses propres erreurs = meilleure méthode de progression orale.",
+  },
+  {
+    day: 30, phase: 3,
+    objective: "Vocabulaire développement durable & ESG + texte académique niveau B2",
+    vocab: ["sustainability","ESG","carbon footprint","circular economy","stakeholder capitalism","net zero","renewable energy","greenwashing","social responsibility","impact investing","supply chain","ethical","governance","transparency","accountability"],
+    vocabNote: "15 mots ESG et développement durable — thème majeur à HEC",
+    comprehension: { type:"Lecture B2", task:"Lis (8 min) : « ESG — Environmental, Social, and Governance — criteria have become central to corporate strategy. Investors increasingly demand transparency and accountability on issues such as carbon footprint reduction and supply chain ethics. Critics argue that greenwashing — presenting misleading sustainability claims — undermines genuine progress. Net zero commitments require both short-term action and long-term structural change. Stakeholder capitalism expands the firm's responsibilities beyond shareholders to encompass society at large. » → Définis ESG, greenwashing, net zero en tes propres mots.", time:"15 min" },
+    active: { type:"Écriture argumentée", task:"Écris 130 mots : 'Is ESG investing a genuine trend or a marketing exercise?' Prends position avec arguments et contre-arguments. Utilise 8 mots du vocab.", time:"22 min" },
+    revision: { task:"Rappel Day 25 (comptabilité) + Day 26 (stratégie) : 5 + 5 mots tests.", time:"8 min" },
+    grammar: { focus:"Le participe passé comme adjectif et modificateur : 'listed companies', 'committed investors', 'published results'. Très fréquent dans les rapports ESG et corporate.", example:"The published results confirmed net zero commitments. Committed organizations disclose their carbon footprint annually.", time:"5 min" },
+    listening: { task:"Cherche 'ESG investing explained' ou 'What is net zero?' (YouTube, 5 min). Note comment le sujet est introduit.", time:"10 min" },
+    tips:"ESG = thème omniprésent dans les cursus business aujourd'hui. Ce vocab est immédiatement utile.",
+  },
+  {
+    day: 31, phase: 3,
+    objective: "Compréhension orale avancée + vocabulaire économie internationale",
+    vocab: ["globalization","protectionism","tariff","free trade agreement","WTO","IMF","World Bank","emerging market","foreign direct investment","comparative advantage","trade deficit","bilateral","multilateral","currency war","economic sanctions"],
+    vocabNote: "15 mots d'économie internationale",
+    comprehension: { type:"Audio", task:"Cherche un épisode de Planet Money ou Freakonomics (10 min max) sur le commerce international ou la mondialisation. Écoute × 1. Note : problème posé / explication / conclusion.", time:"20 min" },
+    active: { type:"Écriture analyse", task:"Écris 120 mots : 'Assess the impact of protectionism on global trade.' Thèse → arguments → contre-arguments → conclusion.", time:"20 min" },
+    revision: { task:"Rappel Day 30 (ESG) : 7 mots à définir oralement.", time:"7 min" },
+    grammar: { focus:"Phrases hypothétiques type université : If + past perfect, would have + pp (3ème conditionnel). Pour analyser des scénarios alternatifs en économie.", example:"If Belgium had joined the euro later, its trade balance would have been more competitive.", time:"8 min" },
+    listening: { task:"Réécoute 3 min de l'épisode × 1.5. Shadowing 1 min.", time:"5 min" },
+    tips:"Les sujets économie internationale apparaissent dans pratiquement tous les modules à HEC.",
+  },
+  {
+    day: 32, phase: 3,
+    objective: "Lecture d'un article académique réel + annotation critique",
+    vocab: [],
+    vocabNote: "Pratique intensive de lecture — pas de nouveau vocab aujourd'hui",
+    comprehension: { type:"Article académique réel", task:"Va sur Google Scholar ou SSRN. Cherche un article (abstract + introduction) sur : 'business engineering' / 'SME financing Belgium' / 'ESG corporate performance'. Lis l'abstract et l'introduction (8–10 min). Note : question de recherche, méthode, résultats annoncés.", time:"20 min" },
+    active: { type:"Annotation et résumé", task:"Écris 130–150 mots résumant l'article lu. Inclus : contexte → question → méthode → résultats → ce que tu en penses (1 phrase critique).", time:"22 min" },
+    revision: { task:"Grand test Phase 3 intermédiaire : 45 mots des Days 25–31. Cible : ≥ 33/45.", time:"10 min" },
+    grammar: { focus:"Vocabulaire de citation académique : according to, as argued by, cited in, as noted by, in line with, contrary to. Pratique avec les sources que tu viens de lire.", example:"According to Smith and Jones (2022), ESG metrics improve long-term firm performance. Contrary to this view, Miller (2023) argues…", time:"8 min" },
+    listening: { task:"Trouve le podcast ou interview des auteurs si disponible, ou un podcast lié au sujet (5 min).", time:"0 min" },
+    tips:"Lire des vrais articles académiques = le meilleur entraînement B2. Fais-le 2× par semaine.",
+  },
+  {
+    day: 33, phase: 3,
+    objective: "Business case complet — lecture, analyse, recommandation",
+    vocab: ["case study","scenario","stakeholder analysis","root cause","short-term","long-term","trade-off","priority","implementation","action plan","KPI","monitoring","evaluation","risk mitigation","executive recommendation"],
+    vocabNote: "15 mots de résolution de cas d'entreprise",
+    comprehension: { type:"Business case complet", task:"Lis ce cas (10 min) : « A Belgian SME in the food sector has seen revenues decline 18% over 2 years. Root cause analysis identifies three issues: supply chain disruption, declining consumer confidence, and a failure to adapt to ESG expectations. The company has a loyal customer base but weak online presence. Cash flow is tight. Stakeholders include the family owners, 45 employees, and two major retail clients. → Identifie les problèmes, parties prenantes, et priorités.", time:"15 min" },
+    active: { type:"Recommandation écrite", task:"Écris une recommandation de 130–150 mots pour ce cas. Structure : situation → 2 problèmes prioritaires → 2 recommandations concrètes avec KPIs → risques. Utilise 8 mots du vocab.", time:"25 min" },
+    revision: { task:"Rappel Day 27 + Day 29 : termes recherche et présentation. 5 + 5 mots oraux.", time:"8 min" },
+    grammar: { focus:"Impératif académique et recommandations formelles : The company should / It is recommended that / We advise / Priority should be given to / It is essential to.", example:"The company should invest in digital channels. Priority should be given to supply chain resilience.", time:"7 min" },
+    listening: { task:"Cherche 'How to analyze a business case – MBA style' (YouTube, 5 min). Compare avec ta méthode.", time:"5 min" },
+    tips:"Les business cases sont le format central des examens à HEC Liège. Entraîne-toi à cette structure.",
+  },
+  {
+    day: 34, phase: 3,
+    objective: "Écriture académique avancée — rapport complet (1ère partie)",
+    vocab: ["executive summary","table of contents","background","literature review","scope","limitations","findings","discussion","conclusion","recommendation","appendix","bibliography","citation","APA style","abstract"],
+    vocabNote: "15 mots sur la structure de rapport académique",
+    comprehension: { type:"Lecture modèle", task:"Lis l'executive summary et l'intro d'un rapport académique réel (cherche sur Google Scholar, HEC Liège publications, ou European Commission economic reports, 8 min). Note la structure et le registre de langue.", time:"12 min" },
+    active: { type:"Écriture rapport — début", task:"Commence un rapport fictif de 200 mots sur : 'The impact of digital transformation on Belgian SMEs.' Écris l'executive summary (60 mots) + l'introduction (140 mots). Utilise le registre formel et académique.", time:"28 min" },
+    revision: { task:"Rappel Day 28 (rapport) + Day 33 (business case) : relis tes productions et identifie 3 améliorations possibles.", time:"8 min" },
+    grammar: { focus:"Impersonnel et distanciation académique : It has been argued that… / It is widely accepted that… / There is evidence to suggest… / It remains unclear whether… / One might argue that…", example:"It has been suggested that digital transformation increases SME competitiveness. However, it remains unclear whether this applies across all sectors.", time:"7 min" },
+    listening: { task:"Podcast : cherche un épisode sur la transformation digitale des entreprises (5 min). Note 3 tendances.", time:"5 min" },
+    tips:"L'impersonnel académique = marque du niveau B2/C1 à l'écrit. Intègre-le dès maintenant.",
+  },
+  {
+    day: 35, phase: 3,
+    objective: "BILAN PHASE 3 — Test complet + production écrite finale",
+    vocab: [],
+    vocabNote: "Évaluation Phase 3 — pas de nouveau contenu",
+    comprehension: { type:"Test lecture B2", task:"Lis sans aide un article de The Economist, HBR, ou FT (section economics/business, 400–500 mots, 10 min). Résume en 5 points. Identifie 5 mots inconnus et déduis leur sens du contexte.", time:"15 min" },
+    active: { type:"Essai timed — 25 min", task:"Sujet : 'To what extent does ESG adoption improve long-term firm performance? Discuss with reference to examples.' 180–200 mots. Structure complète. Registre académique obligatoire.", time:"25 min" },
+    revision: { task:"Grand test Phase 3 complet : 60 mots des Days 25–34. Cible : ≥ 45/60.", time:"12 min" },
+    grammar: { focus:"Auto-correction avancée : relis ton essai avec ces critères : (1) registre formel ? (2) hedging présent ? (3) citations et connecteurs ? (4) erreurs grammaticales ? Apporte 5 corrections minimum.", example:"Identifie les phrases trop informelles et reformule-les.", time:"8 min" },
+    listening: { task:"Écoute complète BBC Business Daily (15–20 min). Note ta progression : tu comprends maintenant combien de % ?", time:"0 min" },
+    tips:"Phase 3 terminée. Tu dois maintenant écrire des textes académiques structurés niveau B2. Phase 4 = simulation réelle d'université.",
+  },
+
+  // ── PHASE 4 : Simulation universitaire (Days 36–42) ───────────────────────
+  {
+    day: 36, phase: 4,
+    objective: "Simulation examen écrit université — lecture + réponse structurée",
+    vocab: ["critically analyze","evaluate","discuss","compare and contrast","to what extent","justify","outline","illustrate","assess","elaborate","demonstrate","define","summarize","synthesize","apply"],
+    vocabNote: "15 verbes d'instruction d'examen universitaire",
+    comprehension: { type:"Simulation examen", task:"Voici une question d'examen type HEC : 'Critically analyze the role of central banks in managing inflation. Use economic theory and real-world examples to support your argument.' Lis la question, identifie le verbe d'instruction et ce qu'il demande exactement. (5 min)", time:"10 min" },
+    active: { type:"Réponse d'examen — 30 min", task:"Réponds à la question ci-dessus en 200–220 mots. Tu as 30 min chrono. Structure : définition → théorie → exemples → critique → conclusion. Niveau académique obligatoire.", time:"30 min" },
+    revision: { task:"Rappel : 10 mots de chaque phase (1, 2, 3) — choisis les plus difficiles. Test rapide.", time:"10 min" },
+    grammar: { focus:"Style académique vs informel : transforme 5 phrases informelles en phrases d'examen. Ex: 'Banks try to fix inflation' → 'Central banks implement monetary policy measures to mitigate inflationary pressures.'", example:"simple → académique × 5", time:"10 min" },
+    listening: { task:"Cherche une vraie lecture de question d'examen ou conférence universitaire (5 min). Écoute le registre de langue.", time:"0 min" },
+    tips:"Les verbes d'instruction (analyze, evaluate, discuss) changent radicalement ce qu'on attend. Maîtrise leurs nuances.",
+  },
+  {
+    day: 37, phase: 4,
+    objective: "Simulation cours — prise de notes + synthèse de lecture multisources",
+    vocab: [],
+    vocabNote: "Pratique intensive — intégration de compétences. Pas de nouveaux mots.",
+    comprehension: { type:"Multi-sources", task:"Lis 2 textes courts sur le même sujet (économie ou management) — trouve-les sur Project Syndicate, VoxEU ou Econlib (environ 300 mots chacun, 12 min total). Identifie : points communs, divergences, arguments phares.", time:"15 min" },
+    active: { type:"Synthèse comparative", task:"Écris une synthèse de 160 mots qui compare les 2 textes. Structure : point commun → divergence principale → ton avis critique en 2 phrases. Citez les sources.", time:"25 min" },
+    revision: { task:"Rappel Days 7 + 23 (connecteurs + expressions débat). Intègre-les dans ta synthèse si ce n'est pas encore fait.", time:"8 min" },
+    grammar: { focus:"Ponctuation académique : usage du point-virgule, des deux-points, des tirets, des parenthèses dans les textes formels.", example:"Three factors explain the crisis: policy failure, market deregulation, and excessive leverage (IMF, 2009).", time:"7 min" },
+    listening: { task:"VoxEU ou NBER podcast (5–7 min). Sujet : economics research récente. Note 3 trouvailles.", time:"5 min" },
+    tips:"La synthèse multi-sources = exercice phare de première année à HEC. Entraîne-toi chaque semaine.",
+  },
+  {
+    day: 38, phase: 4,
+    objective: "Présentation orale finale — simulation jury universitaire",
+    vocab: [],
+    vocabNote: "Pas de nouveaux mots — performance orale complète",
+    comprehension: { type:"Préparation", task:"Relis tes notes des Days 26, 29, 33. Tu vas présenter un business case complet. Sujet : 'Analyze a company of your choice using SWOT and Porter's Five Forces. Make 2 strategic recommendations.' Prépare des notes de présentation en 10 min.", time:"12 min" },
+    active: { type:"Présentation minutée — 5 min", task:"Enregistre-toi pendant 5 min. Structure : intro (30s) → SWOT (90s) → Porter (90s) → recommandations (60s) → conclusion (30s). Signpost chaque transition. Présente sans lire mot pour mot.", time:"28 min" },
+    revision: { task:"Réécoute ton enregistrement. Grille d'auto-évaluation : (1) fluidité 1–5 (2) vocab approprié 1–5 (3) structure claire 1–5 (4) prononciation compréhensible 1–5.", time:"10 min" },
+    grammar: { focus:"Prononciation des mots-clés business : practice saying aloud : 'entrepreneurship', 'competitive', 'diversification', 'quantitative', 'stakeholder', 'sustainability', 'equilibrium'. 3× chaque.", example:"Enregistre ta prononciation, compare à un locuteur natif sur YouGlish.com", time:"10 min" },
+    listening: { task:"Cherche un exemple de student presentation en business school (YouTube). Note ce qui est impressionnant.", time:"0 min" },
+    tips:"YouGlish = outil gratuit pour vérifier la prononciation en contexte. Utilise-le souvent.",
+  },
+  {
+    day: 39, phase: 4,
+    objective: "Simulation examen écrit — rapport complet sous contrainte de temps",
+    vocab: [],
+    vocabNote: "Test de performance écrite — intégration totale",
+    comprehension: { type:"Brief d'examen", task:"Lis le brief suivant (5 min) : « You are a business consultant. A Belgian tech startup has asked for advice. They have strong technology but poor market positioning. Revenue has fallen 25% in 18 months. They are considering either a pivot to B2B or an international expansion. Resources are limited. Write a structured report with your analysis and recommendations. »", time:"8 min" },
+    active: { type:"Rapport complet — 35 min chrono", task:"Écris un rapport complet de 250 mots. Sections obligatoires : Executive Summary (50w) / Situation Analysis (80w) / Options Analysis (60w) / Recommendations (60w). Registre académique/professionnel.", time:"35 min" },
+    revision: { task:"Relis ton rapport. Compte : connecteurs utilisés / mots académiques / phrases passives / modalités. Objectif : ≥ 5 de chaque.", time:"10 min" },
+    grammar: { focus:"Révision finale : les 10 structures grammaticales les plus importantes vues dans le programme. Crée 1 phrase exemple pour chacune.", example:"Passif / Modal / Relative / Conditionnel / Hedging / Nominalisation / Comparatif / Perfect / Participe / Indirect speech", time:"7 min" },
+    listening: { task:"Podcast ou video business (5 min) — sujet libre. Note ton niveau de compréhension spontanée.", time:"0 min" },
+    tips:"250 mots en 35 min = rythme d'examen réel. Entraîne-toi à penser et écrire simultanément.",
+  },
+  {
+    day: 40, phase: 4,
+    objective: "Grand oral de simulation + vocabulaire académique de haut niveau",
+    vocab: ["nuanced","compelling","robust","coherent","insightful","rigorous","sophisticated","comprehensive","systematic","substantive","grounded","concise","persuasive","articulate","well-structured"],
+    vocabNote: "15 adjectifs pour évaluer et améliorer la qualité académique",
+    comprehension: { type:"Auto-évaluation critique", task:"Relis tes 3 meilleures productions écrites du programme (Days 20, 35, 39). Pour chacune, identifie : est-elle nuanced ? robust ? well-structured ? Quels adjectifs du vocab décrivent leur qualité actuelle — et lesquels décrivent ce qu'elles devraient être ?", time:"12 min" },
+    active: { type:"Oral final simulé — 5 min", task:"Sujet tiré au sort parmi ceux-ci : (a) 'Discuss the role of innovation in economic growth' / (b) 'Should companies prioritize ESG over profit?' / (c) 'Evaluate the advantages of globalization for Belgium.' Prépare 3 min, présente 5 min. Enregistre.", time:"28 min" },
+    revision: { task:"Rappel des 15 connecteurs (Day 7) + 15 expressions de débat (Day 23) : les utilises-tu naturellement maintenant ?", time:"10 min" },
+    grammar: { focus:"Registre de langue : scan de tes écrits précédents — identifie 5 formulations trop informelles et propose une version académique pour chacune.", example:"'It's clear that' → 'The evidence suggests' / 'A lot of' → 'A significant proportion of'", time:"10 min" },
+    listening: { task:"Réécoute ton enregistrement oral. Note 2 progrès vs Day 29 et 1 point restant à améliorer.", time:"0 min" },
+    tips:"Ces adjectifs académiques permettent aussi d'auto-évaluer ton travail avant de le rendre. Utilise-les.",
+  },
+  {
+    day: 41, phase: 4,
+    objective: "Test blanc complet — simulation journée d'examen universitaire",
+    vocab: [],
+    vocabNote: "Évaluation finale totale — pas de nouveau contenu",
+    comprehension: { type:"Test blanc — lecture B2", task:"Va sur The Economist ou Financial Times. Lis un article complet (400–500 mots, 10 min) sans aide extérieure. Résume en 5 points. Identifie le registre, les connecteurs, les structures grammaticales clés.", time:"15 min" },
+    active: { type:"Essai timed — 35 min", task:"Sujet : 'To what extent is the Belgian economy well-positioned to face the challenges of the digital economy? Discuss with reference to relevant economic and strategic frameworks.' 220–250 mots. Chrono. Sans correction pendant l'écriture.", time:"35 min" },
+    revision: { task:"Test vocabulaire final : 80 mots mélangés de tout le programme. Cible : ≥ 65/80 pour valider le niveau B2.", time:"0 min" },
+    grammar: { focus:"Relecture finale de ton essai : 5 points de vérification systématique : accord sujet-verbe / temps cohérents / ponctuation correcte / connecteurs logiques / registre formel.", example:"Checklist : ✓ Subject-verb agreement ✓ Tense consistency ✓ No informal language ✓ Logical flow ✓ Accurate punctuation", time:"10 min" },
+    listening: { task:"Podcast académique de 10 min — note ton taux de compréhension estimé. Comparaison avec Day 1.", time:"0 min" },
+    tips:"Tu arrives au bout. Ce test blanc te donne une image réaliste de ton niveau actuel avant HEC.",
+  },
+  {
+    day: 42, phase: 4,
+    objective: "JOUR FINAL — Bilan, consolidation et plan de maintien",
+    vocab: ["achievement","progress","foundation","autonomy","continuous improvement","self-assessment","gap","priority","consolidation","maintenance","exposure","immersion","authentic","fluency","confidence"],
+    vocabNote: "15 mots pour ton développement autonome après ce programme",
+    comprehension: { type:"Lecture réflexive", task:"Relis le Day 1. Relis le Day 41. Compare : le texte de Day 1 te semble-t-il simple maintenant ? Qu'est-ce qui te résistait et ne résiste plus ? (10 min de réflexion structurée)", time:"12 min" },
+    active: { type:"Écriture bilan", task:"Écris 150 mots en anglais : 'What I have learned in 42 days and what I still need to improve before starting at HEC Liège.' Sois honnête et précis. C'est ton auto-évaluation finale.", time:"18 min" },
+    revision: { task:"Plan de maintien : identifie 3 sources que tu vas continuer à utiliser chaque semaine (podcast, article, vidéo). Note-les et engage-toi par écrit.", time:"8 min" },
+    grammar: { focus:"Révision personnalisée : prends l'erreur grammaticale que tu as faite le plus souvent dans ce programme. Écris 5 phrases correctes la ciblant.", example:"Si tu confonds still/yet/already : practice 5 phrases avec chaque.", time:"8 min" },
+    listening: { task:"Écoute 10 min de contenu en anglais académique ou business — sans prendre de notes. Juste écouter. Tu mérites cette écoute détente après 42 jours.", time:"10 min" },
+    tips:"42 jours de travail quotidien = une fondation B1+/B2 solide. Maintiens l'exposition quotidienne à l'anglais pour consolider jusqu'à HEC. Bonne rentrée !",
+  },
+];
+
+const C = {
+  1: { text: "#e05a2b", border: "#f0a58a", bg: "#fff7f4", badge: "#fde8df", glow: "rgba(224,90,43,0.10)", icon: "🌱" },
+  2: { text: "#059669", border: "#6ee7b7", bg: "#f0fdf8", badge: "#d1fae5", glow: "rgba(5,150,105,0.10)", icon: "🏗️" },
+  3: { text: "#b45309", border: "#fcd34d", bg: "#fffbeb", badge: "#fef3c7", glow: "rgba(180,83,9,0.10)", icon: "📐" },
+  4: { text: "#7c3aed", border: "#c4b5fd", bg: "#f5f3ff", badge: "#ede9fe", glow: "rgba(124,58,237,0.10)", icon: "🎓" },
+};
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+  return mobile;
+}
+
+function App() {
+  const isMobile = useIsMobile();
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [completedDays, setCompletedDays] = useState(() => {
+    try { return new Set(JSON.parse(localStorage.getItem("hec_done") || "[]")); }
+    catch { return new Set(); }
+  });
+  const [activePhase, setActivePhase] = useState(null);
+
+  const day = selectedDay ? program.find(d => d.day === selectedDay) : null;
+  const colors = day ? C[day.phase] : C[1];
+  const progress = Math.round((completedDays.size / 42) * 100);
+
+  const toggleComplete = (d) => {
+    setCompletedDays(prev => {
+      const n = new Set(prev);
+      n.has(d) ? n.delete(d) : n.add(d);
+      localStorage.setItem("hec_done", JSON.stringify([...n]));
+      return n;
+    });
+  };
+
+  if (isMobile && selectedDay && day) {
+    return <MobileDayView day={day} colors={colors} completedDays={completedDays} toggleComplete={toggleComplete} onBack={() => setSelectedDay(null)} setSelectedDay={setSelectedDay} />;
+  }
+
+  const shown = activePhase === null ? phases : phases.filter(p => p.id === activePhase);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#fdfaf6", color: "#1c1917", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      {/* TOP BAR */}
+      <div style={{ background: "linear-gradient(135deg, #fff8f1 0%, #fef9ec 50%, #f0fdf8 100%)", borderBottom: "2px solid #e8e0d4", padding: isMobile ? "14px 16px" : "20px 36px", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <div style={{ fontSize: isMobile ? 10 : 11, letterSpacing: 2.5, color: "#a8a29e", textTransform: "uppercase", fontFamily: "monospace" }}>42 jours · 1h/jour · Objectif B2</div>
+            <h1 style={{ margin: "3px 0 0", fontSize: isMobile ? 17 : 21, fontWeight: 800, color: "#292524", letterSpacing: -0.5 }}>🇬🇧 English for HEC Liège</h1>
+          </div>
+          <ProgressRing pct={progress} done={completedDays.size} isMobile={isMobile} />
+        </div>
+        <div style={{ maxWidth: 1100, margin: "12px auto 0", display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <PhaseTab active={activePhase === null} c={{ text: "#78716c", border: "#d6d3d1", badge: "#f5f5f4", glow: "" }} onClick={() => setActivePhase(null)} label="Tous" sub="42j" />
+          {phases.map(p => (
+            <PhaseTab key={p.id} active={activePhase === p.id} c={C[p.id]} onClick={() => setActivePhase(activePhase === p.id ? null : p.id)} label={`${C[p.id].icon} ${p.name}`} sub={`J${p.days[0]}-${p.days[1]}`} />
+          ))}
+        </div>
+      </div>
+
+      {/* MAIN */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: isMobile ? "16px 12px" : "28px 36px", display: isMobile ? "block" : "grid", gridTemplateColumns: selectedDay ? "300px 1fr" : "1fr", gap: 28 }}>
+        <div>
+          {shown.map(p => (
+            <div key={p.id} style={{ marginBottom: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 18 }}>{C[p.id].icon}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: C[p.id].text }}>{p.name}</span>
+                <span style={{ fontSize: 12, color: "#a8a29e" }}>— {p.subtitle}</span>
+                <span style={{ fontSize: 11, color: "#c7bdb7", marginLeft: "auto", background: "#f5f0eb", padding: "1px 8px", borderRadius: 10 }}>
+                  {program.filter(d => d.phase === p.id && completedDays.has(d.day)).length}/{p.days[1]-p.days[0]+1} ✓
+                </span>
+              </div>
+              <DayGrid days={program.filter(d => d.phase === p.id)} selectedDay={selectedDay} completedDays={completedDays} onSelect={setSelectedDay} isMobile={isMobile} />
+            </div>
+          ))}
+        </div>
+
+        {!isMobile && selectedDay && day && (
+          <div style={{ overflowY: "auto", maxHeight: "calc(100vh - 140px)", paddingRight: 4 }}>
+            <DayContent day={day} colors={colors} completedDays={completedDays} toggleComplete={toggleComplete} setSelectedDay={setSelectedDay} isMobile={false} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProgressRing({ pct, done, isMobile }) {
+  const r = isMobile ? 20 : 26;
+  const circ = 2 * Math.PI * r;
+  const dash = circ * (pct / 100);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ textAlign: "right" }}>
+        <div style={{ fontSize: isMobile ? 20 : 24, fontWeight: 800, color: "#e05a2b", lineHeight: 1 }}>{pct}%</div>
+        <div style={{ fontSize: 10, color: "#a8a29e" }}>{done}/42 complétés</div>
+      </div>
+      <svg width={isMobile ? 48 : 60} height={isMobile ? 48 : 60} style={{ transform: "rotate(-90deg)" }}>
+        <circle cx={isMobile ? 24 : 30} cy={isMobile ? 24 : 30} r={r} fill="none" stroke="#e8e0d4" strokeWidth="3.5" />
+        <circle cx={isMobile ? 24 : 30} cy={isMobile ? 24 : 30} r={r} fill="none" stroke="#e05a2b" strokeWidth="3.5" strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" style={{ transition: "stroke-dasharray 0.5s ease" }} />
+      </svg>
+    </div>
+  );
+}
+
+function PhaseTab({ active, c, onClick, label, sub }) {
+  return (
+    <button onClick={onClick} style={{ padding: "5px 13px", borderRadius: 20, fontSize: 12, border: `1.5px solid ${active ? c.text : c.border || "#e8e0d4"}`, color: active ? c.text : "#a8a29e", background: active ? c.badge : "white", cursor: "pointer", transition: "all 0.15s", fontWeight: active ? 700 : 400, boxShadow: active ? `0 2px 8px ${c.glow || "rgba(0,0,0,0.06)"}` : "none" }}>
+      {label} <span style={{ opacity: 0.6, fontSize: 10 }}>{sub}</span>
+    </button>
+  );
+}
+
+function DayGrid({ days, selectedDay, completedDays, onSelect, isMobile }) {
+  const size = isMobile ? 54 : 60;
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fill, minmax(${size}px, 1fr))`, gap: 7 }}>
+      {days.map(d => {
+        const c = C[d.phase];
+        const done = completedDays.has(d.day);
+        const sel = selectedDay === d.day;
+        return (
+          <button key={d.day} onClick={() => onSelect(d.day)} style={{ height: size, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: 12, border: `2px solid ${sel ? c.text : done ? c.border : "#e8e0d4"}`, background: sel ? c.badge : done ? `${c.text}12` : "white", cursor: "pointer", transition: "all 0.15s", boxShadow: sel ? `0 4px 14px ${c.glow}` : "0 1px 3px rgba(0,0,0,0.04)", gap: 2, padding: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 800, color: sel ? c.text : done ? c.text : "#78716c", lineHeight: 1 }}>{d.day}</span>
+            {done && <span style={{ fontSize: 10 }}>✅</span>}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function MobileDayView({ day, colors, completedDays, toggleComplete, onBack, setSelectedDay }) {
+  const done = completedDays.has(day.day);
+  return (
+    <div style={{ minHeight: "100vh", background: colors.bg, color: "#1c1917", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ background: "white", borderBottom: `2px solid ${colors.border}`, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <button onClick={onBack} style={{ background: "transparent", border: "none", color: colors.text, fontSize: 14, cursor: "pointer", fontWeight: 700 }}>← Retour</button>
+        <span style={{ fontSize: 13, fontWeight: 700, color: colors.text }}>{C[day.phase].icon} Jour {day.day}</span>
+        <button onClick={() => toggleComplete(day.day)} style={{ background: done ? colors.badge : "#f5f0eb", border: `2px solid ${done ? colors.text : "#e8e0d4"}`, color: done ? colors.text : "#78716c", borderRadius: 8, padding: "5px 11px", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>
+          {done ? "✅ Fait !" : "Marquer"}
+        </button>
+      </div>
+      <div style={{ padding: "16px 16px 40px" }}>
+        <DayContent day={day} colors={colors} completedDays={completedDays} toggleComplete={toggleComplete} setSelectedDay={setSelectedDay} isMobile={true} />
+      </div>
+    </div>
+  );
+}
+
+function DayContent({ day, colors, completedDays, toggleComplete, setSelectedDay, isMobile }) {
+  const done = completedDays.has(day.day);
+  return (
+    <div>
+      <div style={{ background: `linear-gradient(135deg, ${colors.badge}, white)`, border: `2px solid ${colors.border}`, borderRadius: 16, padding: isMobile ? 16 : 22, marginBottom: 14, boxShadow: `0 4px 20px ${colors.glow}` }}>
+        {!isMobile && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+            <span style={{ fontSize: 12, padding: "3px 12px", borderRadius: 20, background: colors.badge, color: colors.text, border: `1.5px solid ${colors.border}`, fontWeight: 700 }}>{C[day.phase].icon} Jour {day.day}</span>
+            <span style={{ fontSize: 12, padding: "3px 12px", borderRadius: 20, background: "#f5f0eb", color: "#a8a29e" }}>Phase {day.phase}</span>
+          </div>
+        )}
+        <h2 style={{ margin: 0, fontSize: isMobile ? 15 : 17, color: "#1c1917", lineHeight: 1.55, fontWeight: 800 }}>{day.objective}</h2>
+        {!isMobile && (
+          <button onClick={() => toggleComplete(day.day)} style={{ marginTop: 14, background: done ? colors.badge : "white", border: `2px solid ${done ? colors.text : "#e8e0d4"}`, color: done ? colors.text : "#78716c", borderRadius: 10, padding: "8px 18px", fontSize: 13, cursor: "pointer", fontWeight: 700, transition: "all 0.15s" }}>
+            {done ? "✅ Jour complété !" : "✓ Marquer comme fait"}
+          </button>
+        )}
+      </div>
+
+      <Card icon="📚" title="Vocabulaire du jour" time={day.vocab.length > 0 ? "~10 min" : ""} colors={colors}>
+        {day.vocab.length > 0 ? (
+          <>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "#a8a29e", fontStyle: "italic" }}>{day.vocabNote}</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {day.vocab.map(w => <span key={w} style={{ padding: "5px 11px", borderRadius: 20, background: colors.badge, border: `1px solid ${colors.border}`, fontSize: 12, color: colors.text, fontWeight: 600 }}>{w}</span>)}
+            </div>
+            <p style={{ margin: "10px 0 0", fontSize: 12, color: "#a8a29e" }}>→ Ajoute-les dans Anki. Lis chaque mot à voix haute 2×.</p>
+          </>
+        ) : (
+          <p style={{ margin: 0, fontSize: 13, color: "#a8a29e", fontStyle: "italic" }}>{day.vocabNote}</p>
+        )}
+      </Card>
+
+      {day.grammar && (
+        <Card icon="🔧" title="Grammaire" time={day.grammar.time} colors={colors}>
+          <p style={{ margin: "0 0 8px", fontSize: 13, color: "#292524", lineHeight: 1.6 }}><span style={{ color: colors.text, fontWeight: 700 }}>Focus : </span>{day.grammar.focus}</p>
+          <div style={{ background: colors.badge, border: `1px solid ${colors.border}`, borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#57534e", fontStyle: "italic", lineHeight: 1.65 }}>{day.grammar.example}</div>
+        </Card>
+      )}
+
+      <Card icon="👁️" title={`Compréhension — ${day.comprehension.type}`} time={day.comprehension.time} colors={colors}>
+        <p style={{ margin: 0, fontSize: 13, color: "#44403c", lineHeight: 1.8 }}>{day.comprehension.task}</p>
+      </Card>
+
+      {day.listening && (
+        <Card icon="🎧" title="Écoute active" time={day.listening.time} colors={colors}>
+          <p style={{ margin: 0, fontSize: 13, color: "#44403c", lineHeight: 1.8 }}>{day.listening.task}</p>
+        </Card>
+      )}
+
+      <Card icon="✍️" title={`Production active — ${day.active.type}`} time={day.active.time} colors={colors}>
+        <p style={{ margin: 0, fontSize: 13, color: "#44403c", lineHeight: 1.8 }}>{day.active.task}</p>
+      </Card>
+
+      <Card icon="🔄" title="Mini-révision (spaced repetition)" time={day.revision.time} colors={colors}>
+        <p style={{ margin: 0, fontSize: 13, color: "#44403c", lineHeight: 1.8 }}>{day.revision.task}</p>
+      </Card>
+
+      <div style={{ background: "#fffbf0", border: "2px solid #fcd34d", borderLeft: "4px solid #f59e0b", borderRadius: 12, padding: "12px 16px", marginBottom: 14 }}>
+        <div style={{ fontSize: 12, color: "#b45309", fontWeight: 700, marginBottom: 5 }}>💡 Conseil du jour</div>
+        <p style={{ margin: 0, fontSize: 13, color: "#78716c", lineHeight: 1.65, fontStyle: "italic" }}>{day.tips}</p>
+      </div>
+
+      <div style={{ background: "white", border: "1.5px solid #e8e0d4", borderRadius: 12, padding: "12px 16px", marginBottom: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <div style={{ fontSize: 10, color: "#c7bdb7", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontFamily: "monospace" }}>⏱ Répartition — 1h total</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          <Chip label="Vocab" time="10 min" c={colors} />
+          {day.grammar && <Chip label="Grammaire" time={day.grammar.time} c={colors} />}
+          <Chip label="Compréhension" time={day.comprehension.time} c={colors} />
+          {day.listening && <Chip label="Écoute" time={day.listening.time} c={colors} />}
+          <Chip label="Production" time={day.active.time} c={colors} />
+          <Chip label="Révision" time={day.revision.time} c={colors} />
+        </div>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+        {day.day > 1
+          ? <button onClick={() => setSelectedDay(day.day - 1)} style={{ background: "white", border: "2px solid #e8e0d4", color: "#78716c", borderRadius: 10, padding: "9px 18px", fontSize: 13, cursor: "pointer", fontWeight: 700 }}>← Jour {day.day - 1}</button>
+          : <div />}
+        {day.day < 42
+          ? <button onClick={() => setSelectedDay(day.day + 1)} style={{ background: colors.badge, border: `2px solid ${colors.text}`, color: colors.text, borderRadius: 10, padding: "9px 18px", fontSize: 13, cursor: "pointer", fontWeight: 700, boxShadow: `0 3px 10px ${colors.glow}` }}>Jour {day.day + 1} →</button>
+          : <div style={{ fontSize: 15, color: colors.text, fontWeight: 800 }}>🎉 Programme terminé !</div>}
+      </div>
+    </div>
+  );
+}
+
+function Card({ icon, title, time, colors, children }) {
+  return (
+    <div style={{ background: "white", border: "1.5px solid #e8e0d4", borderRadius: 12, padding: "14px 16px", marginBottom: 10, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#57534e", display: "flex", alignItems: "center", gap: 6 }}><span>{icon}</span><span>{title}</span></div>
+        {time && <span style={{ fontSize: 11, color: colors.text, background: colors.badge, border: `1px solid ${colors.border}`, padding: "2px 9px", borderRadius: 10, fontWeight: 700, whiteSpace: "nowrap" }}>{time}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Chip({ label, time, c }) {
+  return (
+    <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: c.badge, border: `1px solid ${c.border}`, color: c.text, fontWeight: 600 }}>
+      {label} · {time}
+    </span>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
